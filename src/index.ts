@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { Octokit } from "octokit";
-// import { env } from "node:process";
 
 const app = new Hono();
 
@@ -22,6 +21,16 @@ app.get("/:username", async (c) => {
           url
           createdAt
           updatedAt
+          openGraphImageUrl
+          forkCount
+        }
+        ... on Starrable {
+          stargazerCount
+        }
+        ... on Repository {
+          primaryLanguage {
+            name
+          }
         }
       }
     }
@@ -36,8 +45,6 @@ app.get("/:username", async (c) => {
   // console.log(JSON.stringify(resp));
   return c.json(resp.user.pinnedItems.nodes);
 });
-
-// app.get("/", (c) => c.text("Hello CF Workers"));
 
 app.notFound((c) => {
   return c.text("Oopsie: Nothing here", 404);
